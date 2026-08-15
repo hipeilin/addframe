@@ -292,4 +292,51 @@
     downloadJpgEl.disabled = true;
     resetEl.disabled = true;
   });
+
+  const shareWidget = document.getElementById('shareWidget');
+  const shareToggleEl = document.getElementById('shareToggle');
+  const shareMenuEl = document.getElementById('shareMenu');
+  const copyLinkBtn = document.getElementById('copyLinkBtn');
+  const copyLinkLabel = document.getElementById('copyLinkLabel');
+  const SHARE_URL = 'https://hipeilin.github.io/addframe/';
+  const SHARE_TEXT = 'AddFrame — add a border to your photo online, free';
+
+  function closeShareMenu() {
+    shareMenuEl.hidden = true;
+    shareToggleEl.setAttribute('aria-expanded', 'false');
+  }
+
+  function openShareMenu() {
+    shareMenuEl.hidden = false;
+    shareToggleEl.setAttribute('aria-expanded', 'true');
+  }
+
+  shareToggleEl.addEventListener('click', () => {
+    if (navigator.share) {
+      navigator.share({ title: SHARE_TEXT, url: SHARE_URL }).catch(() => {});
+      return;
+    }
+    if (shareMenuEl.hidden) openShareMenu();
+    else closeShareMenu();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!shareMenuEl.hidden && !shareWidget.contains(e.target)) closeShareMenu();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !shareMenuEl.hidden) closeShareMenu();
+  });
+
+  copyLinkBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(SHARE_URL);
+      copyLinkLabel.textContent = 'Copied!';
+      setTimeout(() => {
+        copyLinkLabel.textContent = 'Copy link';
+      }, 1500);
+    } catch {
+      // Clipboard API unavailable; nothing more we can do here.
+    }
+  });
 })();

@@ -8,16 +8,21 @@
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
 
+  const linkToggleEl = document.getElementById('linkToggle');
+  const borderWidthLinkedEl = document.getElementById('borderWidthLinked');
+  const borderWidthSidesEl = document.getElementById('borderWidthSides');
+
   const borderWidthEl = document.getElementById('borderWidth');
+  const borderWidthTopEl = document.getElementById('borderWidthTop');
+  const borderWidthRightEl = document.getElementById('borderWidthRight');
+  const borderWidthBottomEl = document.getElementById('borderWidthBottom');
+  const borderWidthLeftEl = document.getElementById('borderWidthLeft');
+
   const borderColorEl = document.getElementById('borderColor');
   const borderRadiusEl = document.getElementById('borderRadius');
   const imageRadiusEl = document.getElementById('imageRadius');
   const previewBgColorEl = document.getElementById('previewBgColor');
   const previewBgResetEl = document.getElementById('previewBgReset');
-
-  const borderWidthValue = document.getElementById('borderWidthValue');
-  const borderRadiusValue = document.getElementById('borderRadiusValue');
-  const imageRadiusValue = document.getElementById('imageRadiusValue');
 
   const downloadPngEl = document.getElementById('downloadPng');
   const downloadJpgEl = document.getElementById('downloadJpg');
@@ -26,6 +31,10 @@
   let img = null;
   let workW = 0;
   let workH = 0;
+  let borderLinked = true;
+
+  const sideSliders = [borderWidthTopEl, borderWidthRightEl, borderWidthBottomEl, borderWidthLeftEl];
+  const allBorderWidthSliders = [borderWidthEl, ...sideSliders];
 
   function roundedRectPath(context, x, y, w, h, r) {
     const radius = Math.max(0, Math.min(r, w / 2, h / 2));
@@ -38,51 +47,107 @@
     context.closePath();
   }
 
+  // Keeps a slider and its adjacent editable number field in sync. Typing a
+  // value and pressing Enter or blurring the field commits it (clamped to
+  // the slider's current min/max) and re-renders.
+  function bindValueInput(slider, numberInput, onChange) {
+    function syncFromSlider() {
+      numberInput.value = slider.value;
+    }
+
+    function commit() {
+      const min = Number(slider.min);
+      const max = Number(slider.max);
+      let value = parseFloat(numberInput.value);
+      if (Number.isNaN(value)) value = Number(slider.value);
+      value = Math.min(max, Math.max(min, Math.round(value)));
+      slider.value = String(value);
+      numberInput.value = String(value);
+      onChange();
+    }
+
+    slider.addEventListener('input', () => {
+      syncFromSlider();
+      onChange();
+    });
+
+    numberInput.addEventListener('blur', commit);
+    numberInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        commit();
+        numberInput.blur();
+      }
+    });
+
+    syncFromSlider();
+  }
+
+  function getBorderWidths() {
+    if (borderLinked) {
+      const w = Number(borderWidthEl.value);
+      return { top: w, right: w, bottom: w, left: w };
+    }
+    return {
+      top: Number(borderWidthTopEl.value),
+      right: Number(borderWidthRightEl.value),
+      bottom: Number(borderWidthBottomEl.value),
+      left: Number(borderWidthLeftEl.value),
+    };
+  }
+
   function updateBoundsForImage() {
     const minSide = Math.min(workW, workH);
     const maxBorder = Math.max(10, Math.floor(minSide * 0.25));
     const maxRadius = Math.floor(minSide / 2);
 
-    borderWidthEl.max = String(maxBorder);
-    borderRadiusEl.max = String(maxRadius);
-    imageRadiusEl.max = String(maxRadius);
+    allBorderWidthSliders.forEach((slider) => {
+      slider.max = String(maxBorder);
+      if (Number(slider.value) > maxBorder) slider.value = String(maxBorder);
+    });
 
-    if (Number(borderWidthEl.value) > maxBorder) borderWidthEl.value = String(maxBorder);
-    if (Number(borderRadiusEl.value) > maxRadius) borderRadiusEl.value = String(maxRadius);
-    if (Number(imageRadiusEl.value) > maxRadius) imageRadiusEl.value = String(maxRadius);
+    [borderRadiusEl, imageRadiusEl].forEach((slider) => {
+      slider.max = String(maxRadius);
+      if (Number(slider.value) > maxRadius) slider.value = String(maxRadius);
+    });
+
+    // Keep the paired number inputs' bounds and displayed values in sync.
+    document.querySelectorAll('.value-input').forEach((input) => {
+      const slider = document.getElementById(input.id.replace(/Value$/, ''));
+      if (slider) {
+        input.max = slider.max;
+        input.value = slider.value;
+      }
+    });
   }
 
   function render() {
     if (!img) return;
 
-    const borderWidth = Number(borderWidthEl.value);
+    const { top, right, bottom, left } = getBorderWidths();
     const borderColor = borderColorEl.value;
     const borderRadius = Number(borderRadiusEl.value);
     const imageRadius = Number(imageRadiusEl.value);
 
-    const totalW = workW + borderWidth * 2;
-    const totalH = workH + borderWidth * 2;
+    const totalW = workW + left + right;
+    const totalH = workH + top + bottom;
 
     canvas.width = totalW;
     canvas.height = totalH;
 
     ctx.clearRect(0, 0, totalW, totalH);
 
-    if (borderWidth > 0) {
+    if (top > 0 || right > 0 || bottom > 0 || left > 0) {
       roundedRectPath(ctx, 0, 0, totalW, totalH, borderRadius);
       ctx.fillStyle = borderColor;
       ctx.fill();
     }
 
     ctx.save();
-    roundedRectPath(ctx, borderWidth, borderWidth, workW, workH, imageRadius);
+    roundedRectPath(ctx, left, top, workW, workH, imageRadius);
     ctx.clip();
-    ctx.drawImage(img, borderWidth, borderWidth, workW, workH);
+    ctx.drawImage(img, left, top, workW, workH);
     ctx.restore();
-
-    borderWidthValue.textContent = `${borderWidth} px`;
-    borderRadiusValue.textContent = `${borderRadius} px`;
-    imageRadiusValue.textContent = `${imageRadius} px`;
   }
 
   function loadFile(file) {
@@ -112,8 +177,41 @@
     reader.readAsDataURL(file);
   }
 
-  [borderWidthEl, borderColorEl, borderRadiusEl, imageRadiusEl].forEach((el) => {
-    el.addEventListener('input', render);
+  bindValueInput(borderWidthEl, document.getElementById('borderWidthValue'), render);
+  bindValueInput(borderWidthTopEl, document.getElementById('borderWidthTopValue'), render);
+  bindValueInput(borderWidthRightEl, document.getElementById('borderWidthRightValue'), render);
+  bindValueInput(borderWidthBottomEl, document.getElementById('borderWidthBottomValue'), render);
+  bindValueInput(borderWidthLeftEl, document.getElementById('borderWidthLeftValue'), render);
+  bindValueInput(borderRadiusEl, document.getElementById('borderRadiusValue'), render);
+  bindValueInput(imageRadiusEl, document.getElementById('imageRadiusValue'), render);
+
+  borderColorEl.addEventListener('input', render);
+
+  linkToggleEl.addEventListener('click', () => {
+    borderLinked = !borderLinked;
+    linkToggleEl.setAttribute('aria-pressed', String(!borderLinked));
+    linkToggleEl.title = borderLinked ? 'Set each side individually' : 'Link all sides together';
+
+    if (!borderLinked) {
+      const w = borderWidthEl.value;
+      sideSliders.forEach((slider) => {
+        slider.value = w;
+        document.getElementById(`${slider.id}Value`).value = w;
+      });
+      borderWidthLinkedEl.hidden = true;
+      borderWidthSidesEl.hidden = false;
+    } else {
+      const average = Math.round(
+        sideSliders.reduce((sum, slider) => sum + Number(slider.value), 0) / sideSliders.length
+      );
+      const max = Number(borderWidthEl.max);
+      borderWidthEl.value = String(Math.min(average, max));
+      document.getElementById('borderWidthValue').value = borderWidthEl.value;
+      borderWidthLinkedEl.hidden = false;
+      borderWidthSidesEl.hidden = true;
+    }
+
+    render();
   });
 
   previewBgColorEl.addEventListener('input', () => {

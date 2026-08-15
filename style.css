@@ -407,6 +407,20 @@ button.small {
   color: var(--muted);
 }
 
+.about {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 0 1.5rem 2.5rem;
+  text-align: center;
+}
+
+.about p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
 .site-footer {
   text-align: center;
   padding: 1.5rem;

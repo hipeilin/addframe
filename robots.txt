@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hipeilin.github.io/addframe/sitemap.xml

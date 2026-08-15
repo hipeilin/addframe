@@ -13,6 +13,7 @@ don't read from here.
 | [`share-widget/`](share-widget) | Floating share button → native share sheet or a menu (X/Facebook/LinkedIn/Reddit/WhatsApp/Email/copy link) | 2 constants (URL, text) |
 | [`analytics-goatcounter/`](analytics-goatcounter) | Free, cookieless pageview analytics | 1 placeholder (account slug) |
 | [`buy-me-a-coffee/`](buy-me-a-coffee) | Plain link + badge image, no floating widget script | 1 placeholder (username), used twice |
+| [`seo-meta/`](seo-meta) | Title/description/canonical/OG/Twitter/JSON-LD template, robots.txt, sitemap.xml, OG-image generator | Fill-in-the-blank template, not a config knob — see its own README |
 
 ## Using one in a new project
 
@@ -20,7 +21,9 @@ Each widget's own `README.md` says exactly which file goes where
 (`<head>` vs `<body>` vs stylesheet vs script). Two widgets touch multiple
 places — `theme-toggle` (4 files) and `share-widget` (3 files) — because
 they need markup, styling, and behavior; the other two are one or two
-files.
+files. `seo-meta` is a different kind of thing entirely: it's almost all
+site-specific content rather than shared logic, so treat it as a
+checklist to fill in, not a component to configure.
 
 ## Shared assumption
 

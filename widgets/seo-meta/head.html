@@ -1,0 +1,57 @@
+<!-- SEO meta block — place inside <head>, after <meta charset> and the
+     viewport meta tag. Composes fine alongside the theme-toggle and
+     analytics widgets' own <head> snippets; order relative to those
+     doesn't matter (only theme-toggle's blocking script has an order
+     requirement, and that's documented in its own widget).
+
+     Placeholders to replace (same value reused across several tags —
+     get each one right once, not six times):
+       YOUR_PAGE_TITLE     - e.g. "AddFrame — Add a Border to Your Photo Online, Free"
+       YOUR_META_DESCRIPTION - one or two sentences, ~150-160 characters
+       YOUR_SITE_NAME       - short brand name, e.g. "AddFrame"
+       YOUR_SITE_URL         - canonical URL, WITH trailing slash, e.g. "https://you.github.io/project/"
+       YOUR_OG_IMAGE_URL     - full absolute URL to a 1200x630 image, e.g. "https://you.github.io/project/og-image.png"
+                                (see og-image-template.html to generate one)
+
+     The JSON-LD block below defaults to @type: WebApplication, which
+     fits a free browser-based tool (this project's own use case). For a
+     blog post, product page, or anything else, swap the @type and its
+     fields for the matching schema.org type instead. -->
+
+<title>YOUR_PAGE_TITLE</title>
+<meta name="description" content="YOUR_META_DESCRIPTION">
+<link rel="canonical" href="YOUR_SITE_URL">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="YOUR_SITE_NAME">
+<meta property="og:title" content="YOUR_PAGE_TITLE">
+<meta property="og:description" content="YOUR_META_DESCRIPTION">
+<meta property="og:url" content="YOUR_SITE_URL">
+<meta property="og:image" content="YOUR_OG_IMAGE_URL">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="YOUR_PAGE_TITLE">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="YOUR_PAGE_TITLE">
+<meta name="twitter:description" content="YOUR_META_DESCRIPTION">
+<meta name="twitter:image" content="YOUR_OG_IMAGE_URL">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "YOUR_SITE_NAME",
+  "url": "YOUR_SITE_URL",
+  "description": "YOUR_META_DESCRIPTION",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any (runs in a web browser)",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "isAccessibleForFree": true
+}
+</script>

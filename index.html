@@ -31,7 +31,7 @@
     </div>
   </section>
 
-  <section class="controls" id="controls" hidden aria-label="Frame settings">
+  <section class="controls" id="controls" aria-label="Frame settings">
 
     <div class="control-group">
       <label for="borderWidth">Border width</label>
@@ -64,10 +64,20 @@
       </div>
     </div>
 
+    <hr class="divider">
+
+    <div class="control-group">
+      <label for="previewBgColor">Preview background <span class="hint-inline">(reference only, not exported)</span></label>
+      <div class="control-row">
+        <input type="color" id="previewBgColor" value="#ffffff">
+        <button type="button" id="previewBgReset" class="ghost small">Transparent</button>
+      </div>
+    </div>
+
     <div class="actions">
-      <button id="downloadPng" type="button" class="primary">Download PNG</button>
-      <button id="downloadJpg" type="button" class="primary">Download JPG</button>
-      <button id="reset" type="button" class="ghost">Start over</button>
+      <button id="downloadPng" type="button" class="primary" disabled>Download PNG</button>
+      <button id="downloadJpg" type="button" class="primary" disabled>Download JPG</button>
+      <button id="reset" type="button" class="ghost" disabled>Start over</button>
     </div>
     <p class="hint">PNG keeps transparent corners. JPG fills them white.</p>
   </section>

@@ -7,16 +7,21 @@
   const canvasWrap = document.getElementById('canvasWrap');
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  const controls = document.getElementById('controls');
 
   const borderWidthEl = document.getElementById('borderWidth');
   const borderColorEl = document.getElementById('borderColor');
   const borderRadiusEl = document.getElementById('borderRadius');
   const imageRadiusEl = document.getElementById('imageRadius');
+  const previewBgColorEl = document.getElementById('previewBgColor');
+  const previewBgResetEl = document.getElementById('previewBgReset');
 
   const borderWidthValue = document.getElementById('borderWidthValue');
   const borderRadiusValue = document.getElementById('borderRadiusValue');
   const imageRadiusValue = document.getElementById('imageRadiusValue');
+
+  const downloadPngEl = document.getElementById('downloadPng');
+  const downloadJpgEl = document.getElementById('downloadJpg');
+  const resetEl = document.getElementById('reset');
 
   let img = null;
   let workW = 0;
@@ -96,7 +101,9 @@
 
         placeholder.hidden = true;
         canvasWrap.hidden = false;
-        controls.hidden = false;
+        downloadPngEl.disabled = false;
+        downloadJpgEl.disabled = false;
+        resetEl.disabled = false;
 
         render();
       };
@@ -107,6 +114,16 @@
 
   [borderWidthEl, borderColorEl, borderRadiusEl, imageRadiusEl].forEach((el) => {
     el.addEventListener('input', render);
+  });
+
+  previewBgColorEl.addEventListener('input', () => {
+    dropzone.classList.add('has-bg');
+    dropzone.style.setProperty('--preview-bg-color', previewBgColorEl.value);
+  });
+
+  previewBgResetEl.addEventListener('click', () => {
+    dropzone.classList.remove('has-bg');
+    dropzone.style.removeProperty('--preview-bg-color');
   });
 
   fileInput.addEventListener('change', (e) => loadFile(e.target.files[0]));
@@ -165,14 +182,16 @@
     }, mimeType, 0.92);
   }
 
-  document.getElementById('downloadPng').addEventListener('click', () => download('image/png', 'png'));
-  document.getElementById('downloadJpg').addEventListener('click', () => download('image/jpeg', 'jpg'));
+  downloadPngEl.addEventListener('click', () => download('image/png', 'png'));
+  downloadJpgEl.addEventListener('click', () => download('image/jpeg', 'jpg'));
 
-  document.getElementById('reset').addEventListener('click', () => {
+  resetEl.addEventListener('click', () => {
     img = null;
     fileInput.value = '';
     placeholder.hidden = false;
     canvasWrap.hidden = true;
-    controls.hidden = true;
+    downloadPngEl.disabled = true;
+    downloadJpgEl.disabled = true;
+    resetEl.disabled = true;
   });
 })();

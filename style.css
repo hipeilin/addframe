@@ -125,6 +125,10 @@ main {
   outline-offset: -8px;
 }
 
+.preview.has-bg {
+  background: var(--preview-bg-color, #ffffff);
+}
+
 .canvas-wrap {
   width: 100%;
   display: flex;
@@ -155,10 +159,22 @@ main {
   margin-bottom: 0.4rem;
 }
 
+.hint-inline {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
 .control-row {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
 }
 
 .value {
@@ -205,6 +221,8 @@ input[type="color"] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
+  flex: 1;
+  min-width: 0;
   height: 34px;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -244,6 +262,11 @@ button:hover {
   opacity: 0.85;
 }
 
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 button.primary {
   background: var(--accent);
   color: var(--accent-fg);
@@ -253,6 +276,13 @@ button.ghost {
   background: transparent;
   border-color: var(--border);
   color: var(--fg);
+}
+
+button.small {
+  flex: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.78rem;
+  white-space: nowrap;
 }
 
 .hint {

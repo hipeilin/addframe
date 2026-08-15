@@ -1,0 +1,24 @@
+.coffee-link {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.coffee-link img {
+  height: 40px;
+  width: auto;
+  vertical-align: middle;
+}
+
+/* To sit inline after a line of text instead of on its own line, move
+   the <a> inside the same <p> as the text, and swap the rule above for:
+.coffee-link {
+  display: inline-block;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+.coffee-link img {
+  height: 28px;
+  width: auto;
+  vertical-align: middle;
+}
+*/

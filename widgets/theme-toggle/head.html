@@ -1,0 +1,13 @@
+<!-- Place as the FIRST thing inside <head>, before your stylesheet <link>.
+     It must run synchronously (no defer/async) so the theme is set before
+     first paint — that's what prevents a flash of the wrong theme. -->
+<script>
+  (function () {
+    try {
+      var theme = localStorage.getItem('theme');
+      if (theme === 'light' || theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+    } catch (e) {}
+  })();
+</script>

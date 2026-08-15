@@ -436,3 +436,14 @@ button.small {
 .site-footer a {
   color: inherit;
 }
+
+.coffee-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+}
+
+.coffee-link img {
+  height: 40px;
+  width: auto;
+  vertical-align: middle;
+}
